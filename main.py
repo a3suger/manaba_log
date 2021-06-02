@@ -7,6 +7,7 @@ from selenium.webdriver.support import expected_conditions
 
 import configparser
 import argparse
+import sys
 
 
 def one_parson(d, name, url):
@@ -37,7 +38,7 @@ def main_parse(d):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('host', help='hostname of manaba')
-    parser.add_argument('cource', help='cource number of manaba')
+    parser.add_argument('course', help='course number of manaba')
 
     parser.add_argument('--config', help='config file for usernema and password')
     parser.add_argument('--timeout', help='timeout (Unit:sec)', default=30, type=int)
@@ -45,7 +46,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     driver = webdriver.Chrome()
-    driver.get("https://{}/ct/course_{}_footprint".format(args.host, args.cource))  # 1931824
+    driver.get("https://{}/ct/course_{}_footprint".format(args.host, args.course))  # 1931824
 
     if args.config is not None:
         config = configparser.ConfigParser()
@@ -55,7 +56,7 @@ if __name__ == '__main__':
         driver.find_element_by_id('password').send_keys(config_manaba.get('password'))
         driver.find_element_by_tag_name('button').click()
     else:
-        print("Please login until {} sec".format(args.timeout))
+        print("Please login until {} sec".format(args.timeout), file=sys.stderr)
         existTitle = WebDriverWait(driver, args.timeout).until(expected_conditions.title_contains("manaba"))
 
     main_parse(driver)
